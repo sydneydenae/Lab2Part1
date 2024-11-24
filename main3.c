@@ -2,8 +2,12 @@
 #include  <sys/types.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include  <string.h>
+
 
 #define   MAX_COUNT  200
+#define   BUF_SIZE   100
+
 
 void  ChildProcess(void);                /* child process prototype  */
 void  ParentProcess(void);               /* parent process prototype */
@@ -34,26 +38,36 @@ void  ChildProcess(void)
   pid_t  pid = getpid();
   pid_t  ppid = getppid();
   int   i;
+  char   buf[BUF_SIZE];
+
 
   for (i = 1; i <= randLoop; i++){
     int randSleep = random() % 10;
-    printf("Child Pid: %d is going to sleep!\n", pid);
+    sprintf(buf, "Child Pid: %d is going to sleep!\n", pid);
+    write(1, buf, strlen(buf));
     sleep(randSleep);
-    printf("Child Pid: is awake!\nWhere is my Parent: %d ?\n\n", ppid);
+    sprintf(buf, "Child Pid: is awake!\nWhere is my Parent: %d ?\n\n", ppid);
+    write(1, buf, strlen(buf));
   }
-  printf("   *** Child process %d is done ***\n", pid);
+  sprintf(buf, "   *** Child process %d is done ***\n", pid);
+  write(1, buf, strlen(buf));
   exit(0);
 }
 
 void  ParentProcess(void)
 {
   int status;
+  char   buf[BUF_SIZE];
+
 
   pid_t childPid = wait(&status);
-  printf("   *** Child pid %d has completed ***\n", childPid);
+  sprintf(buf, "   *** Child pid %d has completed ***\n", childPid);
+  write(1, buf, strlen(buf));
 
- childPid = wait(&status);
-  printf("   *** Child pid %d has completed ***\n", childPid);
+  childPid = wait(&status);
+  sprintf(buf, "   *** Child pid %d has completed ***\n", childPid);
+  write(1, buf, strlen(buf));
 
-  printf("*** Parent is done ***\n");
+  sprintf(buf, "*** Parent is done ***\n");
+  write(1, buf, strlen(buf));
 }
